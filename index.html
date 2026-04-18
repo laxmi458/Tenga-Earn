@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+<title>TCOIN App Preview</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.development.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.development.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+<style>
+:root{--bg:#080d17;--bg2:#0e1525;--bg3:#141e30;--card:#111827;--card2:#162032;--border:#1e2d3d;--border2:#243447;--accent:#00d4aa;--accent2:#00b894;--gold:#f59e0b;--purple:#6366f1;--red:#ef4444;--text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;--font-head:'Syne',sans-serif;--font-body:'DM Sans',sans-serif;--radius:16px;--radius-sm:10px;--radius-xs:6px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body,#root{height:100%;overflow:hidden}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+input,select,button,textarea{font-family:var(--font-body)}
+button{cursor:pointer;border:none;background:none}
+.app-shell{display:flex;flex-direction:column;height:100vh;max-width:430px;margin:0 auto;background:var(--bg);position:relative;overflow:hidden}
+.top-bar{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;z-index:10}
+.balance-chip{display:flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--border2);border-radius:50px;padding:6px 14px}
+.balance-val{font-family:var(--font-head);font-size:16px;font-weight:700;color:var(--gold)}
+.balance-label{font-size:11px;color:var(--text3);font-weight:500}
+.logo-mark{font-family:var(--font-head);font-size:20px;font-weight:800;color:var(--accent);letter-spacing:-0.5px}
+.logo-mark span{color:var(--text2)}
+.icon-btn{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:var(--bg3);color:var(--text2);border:1px solid var(--border);transition:all .2s}
+.icon-btn:hover{background:var(--border);color:var(--text)}
+.notif-btn{position:relative}
+.notif-dot{position:absolute;top:7px;right:7px;width:7px;height:7px;background:var(--red);border-radius:50%;border:1.5px solid var(--bg2)}
+.main-scroll{flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:none}
+.main-scroll::-webkit-scrollbar{display:none}
+.tab-content{padding:16px 16px 24px}
+.bottom-nav{display:flex;background:var(--bg2);border-top:1px solid var(--border);flex-shrink:0;padding:6px 0 10px}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 4px;color:var(--text3);font-size:10px;font-weight:500;transition:all .2s}
+.nav-btn:hover{color:var(--text2)}
+.nav-btn.active{color:var(--accent)}
+.stats-strip{display:flex;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 0;margin-bottom:16px}
+.stat-card{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+.stat-label{font-size:10px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+.stat-val{font-family:var(--font-head);font-size:18px;font-weight:700;color:var(--text)}
+.stat-val.gold{color:var(--gold)}
+.stat-val.accent{color:var(--accent)}
+.stat-divider{width:1px;background:var(--border)}
+.cat-scroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;margin-bottom:16px}
+.cat-scroll::-webkit-scrollbar{display:none}
+.cat-pill{flex-shrink:0;padding:8px 16px;border-radius:50px;font-size:12px;font-weight:600;background:var(--card);border:1px solid var(--border);color:var(--text2);transition:all .2s}
+.cat-pill.active{background:var(--accent);border-color:var(--accent);color:#000;box-shadow:0 0 16px #00d4aa44}
+.cat-pill:hover:not(.active){border-color:var(--border2);color:var(--text)}
+.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:13px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.5px}
+.badge{background:var(--accent);color:#000;font-size:10px;font-weight:700;padding:2px 7px;border-radius:50px}
+.task-list{display:flex;flex-direction:column;gap:8px}
+.task-card{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;cursor:pointer;transition:all .2s;animation:slideIn .3s ease both}
+.task-card:hover{background:var(--card2);border-color:var(--border2);transform:translateX(2px)}
+@keyframes slideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.task-icon-wrap{width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-xs);flex-shrink:0}
+.task-info{flex:1;min-width:0}
+.task-title{font-size:13px;font-weight:600;display:block;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.task-meta{display:flex;gap:6px;align-items:center}
+.meta-chip{display:flex;align-items:center;gap:3px;font-size:10px;font-weight:500;background:var(--bg3);border:1px solid var(--border);padding:2px 7px;border-radius:50px;color:var(--text3)}
+.task-reward{text-align:right;flex-shrink:0}
+.reward-val{display:block;font-family:var(--font-head);font-size:16px;font-weight:700;color:var(--accent)}
+.reward-label{font-size:9px;color:var(--text3);font-weight:500}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(4px);display:flex;align-items:flex-end;justify-content:center;z-index:100;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-box{width:100%;max-width:430px;background:var(--bg2);border-top:1px solid var(--border2);border-radius:24px 24px 0 0;padding:20px;animation:slideUp .3s ease}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.modal-title{font-family:var(--font-head);font-size:17px;font-weight:700}
+.task-preview{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);min-height:140px;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.video-placeholder{display:flex;flex-direction:column;align-items:center;gap:8px;padding:24px}
+.video-placeholder p{font-weight:600;font-size:15px}
+.sub-text{font-size:11px;color:var(--text3)}
+.modal-footer{display:flex;align-items:center;justify-content:center;gap:16px}
+.timer-wrap{display:flex;align-items:center;justify-content:center}
+.claim-btn{flex:1;padding:14px 20px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;font-weight:700;font-size:14px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;box-shadow:0 4px 20px #00d4aa33}
+.claim-btn:hover{transform:translateY(-1px);box-shadow:0 6px 24px #00d4aa44}
+.claim-btn.claimed{background:var(--bg3);border:1px solid var(--accent);color:var(--accent)}
+.page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.page-header h2{font-family:var(--font-head);font-size:22px;font-weight:800}
+.form-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:16px}
+.form-title{font-family:var(--font-head);font-size:16px;font-weight:700;margin-bottom:14px}
+.form-group{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.form-group label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
+.form-row{display:flex;gap:10px}
+.form-row .form-group{flex:1}
+.input{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-xs);padding:10px 12px;color:var(--text);font-size:13px;outline:none;transition:border-color .2s;width:100%}
+.input:focus{border-color:var(--accent)}
+.input option{background:var(--bg2)}
+.budget-preview{display:flex;align-items:center;gap:6px;background:#00d4aa11;border:1px solid #00d4aa33;border-radius:var(--radius-xs);padding:8px 12px;font-size:12px;color:var(--accent);margin-bottom:12px}
+.primary-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;font-weight:700;font-size:14px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
+.primary-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px #00d4aa33}
+.accent-btn{background:var(--accent)!important;color:#000!important;border:none!important}
+.accent-btn-sm{display:flex;align-items:center;gap:6px;padding:7px 14px;font-size:12px;font-weight:600;background:var(--accent);color:#000;border-radius:var(--radius-xs)}
+.danger-btn-sm{display:flex;align-items:center;justify-content:center;width:26px;height:26px;background:#ef444422;border:1px solid #ef444444;border-radius:var(--radius-xs);color:var(--red)}
+.sm-btn{padding:5px 10px;font-size:11px;font-weight:600;border-radius:var(--radius-xs);border:1px solid var(--border2);background:var(--bg3);color:var(--text2);transition:all .2s}
+.sm-btn.accent{background:#00d4aa22;border-color:var(--accent);color:var(--accent)}
+.sm-btn.danger{background:#ef444422;border-color:var(--red);color:var(--red)}
+.logout-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;margin-top:20px;background:#ef444411;border:1px solid #ef444433;border-radius:var(--radius-sm);color:var(--red);font-weight:600;font-size:13px}
+.campaign-list{display:flex;flex-direction:column;gap:10px}
+.campaign-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px}
+.campaign-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.campaign-title{font-weight:600;font-size:14px}
+.status-badge{font-size:10px;font-weight:600;padding:3px 9px;border-radius:50px;text-transform:capitalize}
+.progress-bar{height:4px;background:var(--bg3);border-radius:4px;overflow:hidden;margin-bottom:6px}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:4px;transition:width .5s ease}
+.campaign-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--text3)}
+.section-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;margin-top:4px}
+.ref-hero{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;margin-bottom:20px;padding:24px;background:linear-gradient(135deg,#00d4aa11,#6366f111);border:1px solid var(--border2);border-radius:var(--radius)}
+.ref-icon-ring{width:64px;height:64px;border-radius:50%;background:#00d4aa22;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:0 0 24px #00d4aa33}
+.ref-hero h3{font-family:var(--font-head);font-size:20px;font-weight:700}
+.ref-hero p{font-size:13px;color:var(--text2)}
+.ref-hero strong{color:var(--gold)}
+.ref-code-box{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;margin-bottom:10px}
+.ref-code-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.ref-code{font-family:var(--font-head);font-size:24px;font-weight:800;color:var(--accent);letter-spacing:2px}
+.ref-link-box{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-xs);padding:10px 14px;margin-bottom:14px}
+.ref-link-text{font-size:11px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.share-btn{margin-bottom:20px}
+.ref-stats-row{display:flex;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 0;margin-bottom:16px}
+.ref-stat{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+.ref-stat-val{font-family:var(--font-head);font-size:18px;font-weight:700}
+.ref-stat-val.gold{color:var(--gold)}
+.ref-stat-val.accent{color:var(--accent)}
+.ref-stat-label{font-size:10px;color:var(--text3)}
+.ref-stat-div{width:1px;background:var(--border)}
+.referral-row{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:8px}
+.ref-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff;flex-shrink:0}
+.ref-info{flex:1;display:flex;flex-direction:column;gap:2px;font-size:13px;font-weight:600}
+.text-accent{color:var(--accent)}
+.text-gold{color:var(--gold)}
+.profile-hero{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;margin-bottom:16px;padding-top:8px}
+.avatar-ring{padding:3px;background:linear-gradient(135deg,var(--accent),var(--purple));border-radius:50%;margin-bottom:4px}
+.avatar-big{width:72px;height:72px;border-radius:50%;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:28px;font-weight:800;color:var(--accent)}
+.profile-hero h3{font-family:var(--font-head);font-size:20px;font-weight:700}
+.withdraw-row{display:flex;justify-content:space-between;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:8px}
+.withdraw-right{display:flex;align-items:center;gap:8px}
+.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:var(--card2);border:1px solid var(--accent);color:var(--accent);padding:10px 20px;border-radius:50px;font-size:13px;font-weight:600;z-index:1000;animation:toastIn .3s ease,toastOut .3s ease 2.2s both;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.5)}
+.toast.error{border-color:var(--red);color:var(--red)}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(-10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+@keyframes toastOut{from{opacity:1}to{opacity:0}}
+.auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;position:relative;overflow:hidden}
+.auth-bg{position:fixed;inset:0;background:radial-gradient(ellipse at 20% 50%,#00d4aa15 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,#6366f115 0%,transparent 60%)}
+.auth-card{width:100%;max-width:380px;background:var(--bg2);border:1px solid var(--border2);border-radius:24px;padding:32px 28px;position:relative;z-index:1;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.auth-logo{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:8px}
+.auth-logo-icon{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#0099ff);display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:20px;font-weight:800;color:#000}
+.auth-logo span{font-family:var(--font-head);font-size:24px;font-weight:800}
+.auth-tagline{text-align:center;color:var(--text3);font-size:13px;margin-bottom:22px}
+.auth-tabs{display:flex;background:var(--bg3);border-radius:var(--radius-xs);padding:3px;margin-bottom:18px}
+.auth-tabs button{flex:1;padding:8px;font-size:13px;font-weight:600;border-radius:calc(var(--radius-xs) - 2px);color:var(--text3);transition:all .2s}
+.auth-tabs button.active{background:var(--card2);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.auth-err{color:var(--red);font-size:12px;margin-bottom:10px}
+.auth-hint{display:flex;align-items:center;gap:5px;justify-content:center;margin-top:14px;font-size:11px;color:var(--text3)}
+.admin-shell{display:flex;height:100vh;overflow:hidden}
+.admin-sidebar{width:220px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:20px 12px}
+.admin-logo{display:flex;align-items:center;gap:8px;font-family:var(--font-head);font-size:17px;font-weight:800;padding:8px 8px 20px;border-bottom:1px solid var(--border);margin-bottom:12px}
+.admin-logo span{color:var(--text2);font-size:13px}
+.admin-nav{flex:1;display:flex;flex-direction:column;gap:4px}
+.admin-nav-btn{display:flex;align-items:center;gap:10px;padding:10px 12px;font-size:13px;font-weight:500;border-radius:var(--radius-xs);color:var(--text3);transition:all .2s;text-align:left}
+.admin-nav-btn:hover{background:var(--bg3);color:var(--text2)}
+.admin-nav-btn.active{background:#00d4aa22;color:var(--accent);font-weight:600}
+.admin-logout{display:flex;align-items:center;gap:8px;padding:10px 12px;font-size:13px;font-weight:500;color:var(--red);border-radius:var(--radius-xs);border-top:1px solid var(--border);padding-top:14px;margin-top:8px}
+.admin-main{flex:1;overflow-y:auto;overflow-x:hidden;background:var(--bg);scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.admin-section{padding:28px}
+.admin-section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.admin-title{font-family:var(--font-head);font-size:22px;font-weight:800;margin-bottom:20px}
+.admin-stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:24px}
+.admin-stat-card{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;transition:all .2s}
+.admin-stat-card:hover{border-color:var(--border2);transform:translateY(-1px)}
+.admin-stat-icon{width:44px;height:44px;border-radius:var(--radius-xs);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.admin-stat-val{font-family:var(--font-head);font-size:24px;font-weight:800}
+.admin-stat-label{font-size:12px;color:var(--text3)}
+.admin-two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.admin-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px}
+.admin-card h3{font-family:var(--font-head);font-size:14px;margin-bottom:14px}
+.admin-list-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.admin-list-row:last-child{border-bottom:none;padding-bottom:0}
+.admin-user-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.admin-user-row:last-child{border-bottom:none}
+@media(max-width:600px){.admin-sidebar{width:60px}.admin-logo span,.admin-nav-btn span,.admin-logout span{display:none}.admin-logo{justify-content:center;font-size:0}.admin-nav-btn{justify-content:center}.admin-logout{justify-content:center}.admin-stats-grid{grid-template-columns:1fr}.admin-two-col{grid-template-columns:1fr}.admin-section{padding:16px}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useEffect,useRef}=React;
+
+const MOCK_TASKS={video:[{id:1,title:"Watch Crypto Tutorial",url:"#",reward:25,timer:15,type:"video"},{id:2,title:"DeFi Explained",url:"#",reward:30,timer:20,type:"video"},{id:3,title:"Blockchain Basics",url:"#",reward:20,timer:10,type:"video"}],web:[{id:4,title:"Visit CryptoNews",url:"https://coindesk.com",reward:10,timer:10,type:"web"},{id:5,title:"Explore DeFi Hub",url:"#",reward:12,timer:10,type:"web"}],apps:[{id:6,title:"Download WalletApp",url:"#",reward:50,timer:0,type:"app"},{id:7,title:"Install TradePro",url:"#",reward:75,timer:0,type:"app"}],ads:[{id:8,title:"View Sponsored Ad",url:"#",reward:5,timer:8,type:"ad"},{id:9,title:"Watch Brand Promo",url:"#",reward:8,timer:12,type:"ad"}]};
+const MOCK_CAMPAIGNS=[{id:1,title:"Promote My App",type:"app",target:1000,completed:340,reward:5,budget:50,status:"active",user:"john@email.com"},{id:2,title:"Web Traffic Boost",type:"web",target:500,completed:500,reward:10,budget:30,status:"completed",user:"alice@email.com"},{id:3,title:"Video Views Campaign",type:"video",target:200,completed:0,reward:15,budget:20,status:"pending",user:"bob@email.com"}];
+const MOCK_USERS=[{id:1,name:"John Doe",email:"john@email.com",balance:1240,ref_code:"TCOIN12345",total_earned:3200,today_earned:120,status:"active"},{id:2,name:"Alice Smith",email:"alice@email.com",balance:890,ref_code:"TCOIN67890",total_earned:1800,today_earned:50,status:"active"},{id:3,name:"Bob Khan",email:"bob@email.com",balance:230,ref_code:"TCOIN11111",total_earned:500,today_earned:30,status:"banned"}];
+const MOCK_WITHDRAWALS=[{id:1,user:"john@email.com",amount:500,method:"bKash",account:"01711111111",status:"pending"},{id:2,user:"alice@email.com",amount:300,method:"Payoneer",account:"alice@payoneer.com",status:"approved"},{id:3,user:"bob@email.com",amount:200,method:"bKash",account:"01722222222",status:"rejected"}];
+
+const I=({name,size=20,style={}})=>{
+  const p={fill:"none",stroke:"currentColor",strokeWidth:"2",viewBox:"0 0 24 24",width:size,height:size,style};
+  const icons={
+    home:<svg {...p}><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
+    campaign:<svg {...p}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>,
+    referral:<svg {...p}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
+    profile:<svg {...p}><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
+    video:<svg {...p}><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>,
+    web:<svg {...p}><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>,
+    apps:<svg {...p}><rect x="2" y="2" width="9" height="9"/><rect x="13" y="2" width="9" height="9"/><rect x="2" y="13" width="9" height="9"/><rect x="13" y="13" width="9" height="9"/></svg>,
+    ads:<svg {...p}><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>,
+    coin:<svg {...p}><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>,
+    copy:<svg {...p}><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>,
+    share:<svg {...p}><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>,
+    check:<svg {...p} strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>,
+    withdraw:<svg {...p}><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>,
+    users:<svg {...p}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
+    logout:<svg {...p}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>,
+    plus:<svg {...p}><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
+    x:<svg {...p}><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
+    bell:<svg {...p}><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>,
+    fire:<svg {...p}><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>,
+    admin:<svg {...p}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
+    chart:<svg {...p}><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>,
+    clock:<svg {...p}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
+    trend:<svg {...p}><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>,
+  };
+  return icons[name]||null;
+};
+
+function TaskTimer({duration,onComplete}){
+  const[rem,setRem]=useState(duration);
+  const[done,setDone]=useState(false);
+  useEffect(()=>{if(rem<=0){setDone(true);onComplete();return;}const t=setTimeout(()=>setRem(r=>r-1),1000);return()=>clearTimeout(t);},[rem]);
+  const pct=((duration-rem)/duration)*100;
+  return <div className="timer-wrap"><svg viewBox="0 0 36 36" width="64" height="64"><circle cx="18" cy="18" r="15.9" fill="none" stroke="#1e2d3d" strokeWidth="3"/><circle cx="18" cy="18" r="15.9" fill="none" stroke={done?"#00d4aa":"#f59e0b"} strokeWidth="3" strokeDasharray="100" strokeDashoffset={100-pct} strokeLinecap="round" style={{transform:"rotate(-90deg)",transformOrigin:"50% 50%",transition:"stroke-dashoffset 1s linear"}}/><text x="18" y="22" textAnchor="middle" fill={done?"#00d4aa":"#f59e0b"} fontSize="8" fontWeight="bold">{done?"✓":rem+"s"}</text></svg></div>;
+}
+
+function TaskModal({task,onClose,onReward}){
+  const[done,setDone]=useState(task.timer===0);
+  const[rewarded,setRewarded]=useState(false);
+  const claim=()=>{if(!rewarded&&done){setRewarded(true);onReward(task.reward);}};
+  const typeIcons={video:"video",web:"web",app:"apps",ad:"ads"};
+  return <div className="modal-overlay" onClick={onClose}><div className="modal-box" onClick={e=>e.stopPropagation()}><div className="modal-header"><span className="modal-title">{task.title}</span><button className="icon-btn" onClick={onClose}><I name="x" size={18}/></button></div><div className="task-preview"><div className="video-placeholder"><I name={typeIcons[task.type]||"video"} size={40} style={{color:"#00d4aa"}}/><p>{task.type==="app"?"Download App":"Content"}</p>{task.timer>0&&<p className="sub-text">Stay {task.timer}s to earn</p>}</div></div><div className="modal-footer">{task.timer>0&&!done&&<TaskTimer duration={task.timer} onComplete={()=>setDone(true)}/>}{(done||task.timer===0)&&<button className={`claim-btn ${rewarded?"claimed":""}`} onClick={claim} disabled={rewarded}>{rewarded?<><I name="check" size={16}/> Claimed!</>:<>Claim +{task.reward} TCOIN</>}</button>}</div></div></div>;
+}
+
+function HomeTab({user,tasks,taskType,setTaskType,onTask}){
+  const cats=[{key:"video",label:"🎬 Videos"},{key:"web",label:"🌐 Web"},{key:"apps",label:"📲 Apps"},{key:"ads",label:"💰 Ads"}];
+  const typeColors={video:"#e63946",web:"#457b9d",app:"#2a9d8f",ad:"#e9c46a"};
+  const typeIcons={video:"video",web:"web",app:"apps",ad:"ads"};
+  return <div className="tab-content">
+    <div className="stats-strip"><div className="stat-card"><span className="stat-label">Today</span><span className="stat-val gold">+{user.today_earned}</span></div><div className="stat-divider"/><div className="stat-card"><span className="stat-label">Total</span><span className="stat-val">{user.total_earned}</span></div><div className="stat-divider"/><div className="stat-card"><span className="stat-label">Referrals</span><span className="stat-val accent">12</span></div></div>
+    <div className="cat-scroll">{cats.map(c=><button key={c.key} className={`cat-pill ${taskType===c.key?"active":""}`} onClick={()=>setTaskType(c.key)}>{c.label}</button>)}</div>
+    <div className="section-header"><span>Available Tasks</span><span className="badge">{tasks[taskType]?.length}</span></div>
+    <div className="task-list">{tasks[taskType]?.map(t=><div key={t.id} className="task-card" onClick={()=>onTask(t)}><div className="task-icon-wrap" style={{background:typeColors[t.type]+"22",border:`1px solid ${typeColors[t.type]}44`}}><I name={typeIcons[t.type]} size={22}/></div><div className="task-info"><span className="task-title">{t.title}</span><div className="task-meta">{t.timer>0&&<span className="meta-chip"><I name="clock" size={11}/>{t.timer}s</span>}<span className="meta-chip">{t.type}</span></div></div><div className="task-reward"><span className="reward-val">+{t.reward}</span><span className="reward-label">TCOIN</span></div></div>)}</div>
+  </div>;
+}
+
+function CampaignTab({notify}){
+  const[view,setView]=useState("list");
+  const[campaigns,setCampaigns]=useState([{id:1,title:"My Website Promo",type:"web",target:200,completed:45,reward:8,budget:20,status:"active"}]);
+  const[form,setForm]=useState({title:"",type:"video",target:100,reward:5,budget:10,url:""});
+  const submit=()=>{if(!form.title||!form.url){notify("Fill all fields","error");return;}setCampaigns(c=>[...c,{...form,id:Date.now(),completed:0,status:"pending"}]);notify("Campaign submitted!");setView("list");};
+  const sc={active:"#00d4aa",pending:"#f59e0b",completed:"#6366f1"};
+  return <div className="tab-content">
+    <div className="page-header"><h2>Campaigns</h2><button className="accent-btn-sm" onClick={()=>setView(v=>v==="create"?"list":"create")}><I name={view==="create"?"x":"plus"} size={16}/>{view==="create"?"Cancel":"New"}</button></div>
+    {view==="create"?<div className="form-card"><h3 className="form-title">Create Campaign</h3><div className="form-group"><label>Title</label><input className="input" placeholder="Campaign name" value={form.title} onChange={e=>setForm({...form,title:e.target.value})}/></div><div className="form-row"><div className="form-group"><label>Type</label><select className="input" value={form.type} onChange={e=>setForm({...form,type:e.target.value})}><option value="video">🎬 Video</option><option value="web">🌐 Website</option><option value="app">📲 App</option></select></div><div className="form-group"><label>Target</label><input className="input" type="number" value={form.target} onChange={e=>setForm({...form,target:+e.target.value})}/></div></div><div className="form-row"><div className="form-group"><label>Reward (T)</label><input className="input" type="number" value={form.reward} onChange={e=>setForm({...form,reward:+e.target.value})}/></div><div className="form-group"><label>Budget ($)</label><input className="input" type="number" value={form.budget} onChange={e=>setForm({...form,budget:+e.target.value})}/></div></div><div className="form-group"><label>URL</label><input className="input" placeholder="https://..." value={form.url} onChange={e=>setForm({...form,url:e.target.value})}/></div><div className="budget-preview"><I name="coin" size={14}/>×{form.target} views at ${(form.budget/form.target).toFixed(4)}/view</div><button className="primary-btn" onClick={submit}>Submit Campaign →</button></div>
+    :<div className="campaign-list">{campaigns.map(c=><div key={c.id} className="campaign-card"><div className="campaign-top"><span className="campaign-title">{c.title}</span><span className="status-badge" style={{background:sc[c.status]+"22",color:sc[c.status]}}>{c.status}</span></div><div className="progress-bar"><div className="progress-fill" style={{width:`${Math.min(100,(c.completed/c.target)*100)}%`}}/></div><div className="campaign-meta"><span>{c.completed}/{c.target}</span><span style={{color:"#00d4aa"}}>+{c.reward}T/user</span></div></div>)}</div>}
+  </div>;
+}
+
+function ReferralTab({user,notify}){
+  const refLink=`https://tcoin.app/register?ref=${user.ref_code}`;
+  const[copied,setCopied]=useState(false);
+  const copy=()=>{navigator.clipboard?.writeText(refLink).catch(()=>{});setCopied(true);notify("Link copied!");setTimeout(()=>setCopied(false),2000);};
+  const refs=[{name:"Ahmed K.",earned:240,date:"2 days ago"},{name:"Riya S.",earned:180,date:"5 days ago"},{name:"Tanvir M.",earned:90,date:"1 week ago"}];
+  return <div className="tab-content">
+    <div className="page-header"><h2>Referral</h2></div>
+    <div className="ref-hero"><div className="ref-icon-ring"><I name="referral" size={32} style={{color:"#00d4aa"}}/></div><h3>Invite &amp; Earn</h3><p>Get <strong>20 TCOIN</strong> per friend who joins</p></div>
+    <div className="ref-code-box"><div className="ref-code-label">Your Code</div><div className="ref-code">{user.ref_code}</div></div>
+    <div className="ref-link-box"><span className="ref-link-text">{refLink}</span><button className="icon-btn" onClick={copy} style={copied?{color:"#00d4aa"}:{}}><I name={copied?"check":"copy"} size={18}/></button></div>
+    <button className="primary-btn share-btn"><I name="share" size={16}/> Share Link</button>
+    <div className="ref-stats-row"><div className="ref-stat"><span className="ref-stat-val">12</span><span className="ref-stat-label">Referrals</span></div><div className="ref-stat-div"/><div className="ref-stat"><span className="ref-stat-val gold">240</span><span className="ref-stat-label">TCOIN Earned</span></div><div className="ref-stat-div"/><div className="ref-stat"><span className="ref-stat-val accent">3</span><span className="ref-stat-label">This Week</span></div></div>
+    <p className="section-label">Recent Referrals</p>
+    {refs.map((r,i)=><div key={i} className="referral-row"><div className="ref-avatar">{r.name[0]}</div><div className="ref-info"><span>{r.name}</span><span className="sub-text">{r.date}</span></div><span className="text-accent">+{r.earned}T</span></div>)}
+  </div>;
+}
+
+function ProfileTab({user,notify,onLogout}){
+  const[showW,setShowW]=useState(false);
+  const[wf,setWf]=useState({amount:"",method:"bKash",account:""});
+  const hist=[{amount:500,method:"bKash",status:"pending",date:"Apr 15"},{amount:300,method:"Payoneer",status:"approved",date:"Apr 10"}];
+  const sc={pending:"#f59e0b",approved:"#00d4aa",rejected:"#ef4444"};
+  const submit=()=>{if(!wf.amount||!wf.account){notify("Fill all fields","error");return;}notify("Withdrawal submitted!");setShowW(false);};
+  return <div className="tab-content">
+    <div className="profile-hero"><div className="avatar-ring"><div className="avatar-big">{user.name[0]}</div></div><h3>{user.name}</h3><p className="sub-text">{user.email}</p></div>
+    <div className="stats-strip"><div className="stat-card"><span className="stat-label">Balance</span><span className="stat-val gold">{user.balance}</span></div><div className="stat-divider"/><div className="stat-card"><span className="stat-label">Total</span><span className="stat-val">{user.total_earned}</span></div><div className="stat-divider"/><div className="stat-card"><span className="stat-label">Today</span><span className="stat-val accent">+{user.today_earned}</span></div></div>
+    <button className="primary-btn" style={{marginBottom:12}} onClick={()=>setShowW(v=>!v)}><I name="withdraw" size={16}/>{showW?"Cancel":"Withdraw"}</button>
+    {showW&&<div className="form-card"><div className="form-row"><div className="form-group"><label>Amount</label><input className="input" type="number" placeholder="Min 100" value={wf.amount} onChange={e=>setWf({...wf,amount:e.target.value})}/></div><div className="form-group"><label>Method</label><select className="input" value={wf.method} onChange={e=>setWf({...wf,method:e.target.value})}><option>bKash</option><option>Payoneer</option><option>USDT</option></select></div></div><div className="form-group"><label>Account</label><input className="input" placeholder="Number / email" value={wf.account} onChange={e=>setWf({...wf,account:e.target.value})}/></div><button className="primary-btn" onClick={submit}>Submit →</button></div>}
+    <p className="section-label">Withdrawal History</p>
+    {hist.map((w,i)=><div key={i} className="withdraw-row"><div><span className="task-title">{w.method}</span><span className="sub-text"> · {w.date}</span></div><div className="withdraw-right"><span className="reward-val">{w.amount}T</span><span className="status-badge" style={{background:sc[w.status]+"22",color:sc[w.status]}}>{w.status}</span></div></div>)}
+    <button className="logout-btn" onClick={onLogout}><I name="logout" size={16}/> Sign Out</button>
+  </div>;
+}
+
+function UserPanel({user,onLogout,setUser}){
+  const[tab,setTab]=useState("home");
+  const[activeTask,setActiveTask]=useState(null);
+  const[taskType,setTaskType]=useState("video");
+  const[notif,setNotif]=useState(null);
+  const notify=(msg,type="success")=>{setNotif({msg,type});setTimeout(()=>setNotif(null),2500);};
+  const handleReward=(amt)=>{setUser(u=>({...u,balance:u.balance+amt,today_earned:u.today_earned+amt,total_earned:u.total_earned+amt}));notify(`+${amt} TCOIN earned! 🎉`);setActiveTask(null);};
+  return <div className="app-shell">
+    {notif&&<div className={`toast ${notif.type}`}>{notif.msg}</div>}
+    {activeTask&&<TaskModal task={activeTask} onClose={()=>setActiveTask(null)} onReward={handleReward}/>}
+    <header className="top-bar">
+      <div className="balance-chip"><I name="coin" size={16} style={{color:"#f59e0b"}}/><span className="balance-val">{user.balance.toLocaleString()}</span><span className="balance-label">TCOIN</span></div>
+      <div className="logo-mark">T<span>COIN</span></div>
+      <button className="icon-btn notif-btn"><I name="bell" size={20}/><span className="notif-dot"/></button>
+    </header>
+    <main className="main-scroll">
+      {tab==="home"&&<HomeTab user={user} tasks={MOCK_TASKS} taskType={taskType} setTaskType={setTaskType} onTask={setActiveTask}/>}
+      {tab==="campaign"&&<CampaignTab notify={notify}/>}
+      {tab==="referral"&&<ReferralTab user={user} notify={notify}/>}
+      {tab==="profile"&&<ProfileTab user={user} notify={notify} onLogout={onLogout}/>}
+    </main>
+    <nav className="bottom-nav">
+      {[{key:"home",label:"Home",icon:"home"},{key:"campaign",label:"Campaign",icon:"campaign"},{key:"referral",label:"Referral",icon:"referral"},{key:"profile",label:"Profile",icon:"profile"}].map(({key,label,icon})=>(
+        <button key={key} className={`nav-btn ${tab===key?"active":""}`} onClick={()=>setTab(key)}>
+          <I name={icon} size={22}/><span>{label}</span>
+        </button>
+      ))}
+    </nav>
+  </div>;
+}
+
+function AdminPanel({onLogout}){
+  const[tab,setTab]=useState("dashboard");
+  const[tasks,setTasks]=useState(MOCK_TASKS);
+  const[users,setUsers]=useState(MOCK_USERS);
+  const[withdrawals,setWithdrawals]=useState(MOCK_WITHDRAWALS);
+  const[campaigns,setCampaigns]=useState(MOCK_CAMPAIGNS);
+  const[notif,setNotif]=useState(null);
+  const notify=(msg,type="success")=>{setNotif({msg,type});setTimeout(()=>setNotif(null),2500);};
+  const nav=[{key:"dashboard",label:"Dashboard",icon:"chart"},{key:"tasks",label:"Content",icon:"video"},{key:"users",label:"Users",icon:"users"},{key:"withdrawals",label:"Withdrawals",icon:"withdraw"},{key:"campaigns",label:"Campaigns",icon:"campaign"}];
+  return <div className="admin-shell">
+    {notif&&<div className={`toast ${notif.type}`}>{notif.msg}</div>}
+    <aside className="admin-sidebar">
+      <div className="admin-logo"><I name="admin" size={22} style={{color:"#00d4aa"}}/> TCOIN <span>Admin</span></div>
+      <nav className="admin-nav">{nav.map(n=><button key={n.key} className={`admin-nav-btn ${tab===n.key?"active":""}`} onClick={()=>setTab(n.key)}><I name={n.icon} size={18}/><span>{n.label}</span></button>)}</nav>
+      <button className="admin-logout" onClick={onLogout}><I name="logout" size={16}/><span>Logout</span></button>
+    </aside>
+    <main className="admin-main">
+      {tab==="dashboard"&&<AdminDash users={users} withdrawals={withdrawals} campaigns={campaigns}/>}
+      {tab==="tasks"&&<AdminTasks tasks={tasks} setTasks={setTasks} notify={notify}/>}
+      {tab==="users"&&<AdminUsers users={users} setUsers={setUsers} notify={notify}/>}
+      {tab==="withdrawals"&&<AdminWithdrawals withdrawals={withdrawals} setWithdrawals={setWithdrawals} notify={notify}/>}
+      {tab==="campaigns"&&<AdminCampaigns campaigns={campaigns} setCampaigns={setCampaigns} notify={notify}/>}
+    </main>
+  </div>;
+}
+
+function AdminDash({users,withdrawals,campaigns}){
+  const stats=[{label:"Total Users",value:users.length,icon:"users",color:"#6366f1"},{label:"Active Campaigns",value:campaigns.filter(c=>c.status==="active").length,icon:"campaign",color:"#00d4aa"},{label:"Pending Withdrawals",value:withdrawals.filter(w=>w.status==="pending").length,icon:"withdraw",color:"#f59e0b"},{label:"Total Tasks",value:Object.values(MOCK_TASKS).flat().length,icon:"fire",color:"#ef4444"}];
+  return <div className="admin-section">
+    <h2 className="admin-title">Dashboard</h2>
+    <div className="admin-stats-grid">{stats.map((s,i)=><div key={i} className="admin-stat-card"><div className="admin-stat-icon" style={{background:s.color+"22"}}><I name={s.icon} size={22} style={{color:s.color}}/></div><div><div className="admin-stat-val">{s.value}</div><div className="admin-stat-label">{s.label}</div></div></div>)}</div>
+    <div className="admin-two-col">
+      <div className="admin-card"><h3>Recent Users</h3>{users.slice(0,3).map(u=><div key={u.id} className="admin-list-row"><div className="ref-avatar" style={{fontSize:12}}>{u.name[0]}</div><div><div style={{fontSize:13,fontWeight:600}}>{u.name}</div><div className="sub-text">{u.email}</div></div><span className="reward-val">{u.balance}T</span></div>)}</div>
+      <div className="admin-card"><h3>Pending Campaigns</h3>{campaigns.filter(c=>c.status==="pending").map(c=><div key={c.id} className="admin-list-row"><I name="campaign" size={18} style={{color:"#00d4aa"}}/><div><div style={{fontSize:13,fontWeight:600}}>{c.title}</div><div className="sub-text">{c.user}</div></div><span className="status-badge" style={{background:"#f59e0b22",color:"#f59e0b"}}>{c.status}</span></div>)}</div>
+    </div>
+  </div>;
+}
+
+function AdminTasks({tasks,setTasks,notify}){
+  const[show,setShow]=useState(false);
+  const[form,setForm]=useState({type:"video",title:"",url:"",reward:10,timer:15});
+  const add=()=>{if(!form.title||!form.url){notify("Fill fields","error");return;}setTasks(t=>({...t,[form.type]:[...(t[form.type]||[]),{...form,id:Date.now(),reward:+form.reward,timer:+form.timer}]}));notify("Task added!");setShow(false);};
+  const del=(type,id)=>{setTasks(t=>({...t,[type]:t[type].filter(x=>x.id!==id)}));notify("Deleted");};
+  return <div className="admin-section">
+    <div className="admin-section-header"><h2 className="admin-title" style={{marginBottom:0}}>Content</h2><button className="accent-btn-sm" onClick={()=>setShow(v=>!v)}><I name={show?"x":"plus"} size={16}/>{show?"Cancel":"Add Task"}</button></div>
+    {show&&<div className="admin-form-card" style={{marginBottom:16}}><div className="form-row"><div className="form-group"><label>Type</label><select className="input" value={form.type} onChange={e=>setForm({...form,type:e.target.value})}><option value="video">Video</option><option value="web">Web</option><option value="apps">App</option><option value="ads">Ad</option></select></div><div className="form-group"><label>Title</label><input className="input" placeholder="Task title" value={form.title} onChange={e=>setForm({...form,title:e.target.value})}/></div></div><div className="form-group"><label>URL</label><input className="input" placeholder="https://..." value={form.url} onChange={e=>setForm({...form,url:e.target.value})}/></div><div className="form-row"><div className="form-group"><label>Reward</label><input className="input" type="number" value={form.reward} onChange={e=>setForm({...form,reward:e.target.value})}/></div><div className="form-group"><label>Timer (s)</label><input className="input" type="number" value={form.timer} onChange={e=>setForm({...form,timer:e.target.value})}/></div></div><button className="primary-btn" onClick={add}>Add →</button></div>}
+    {Object.entries(tasks).map(([type,list])=><div key={type} className="admin-card" style={{marginBottom:14}}><h3 style={{textTransform:"capitalize",marginBottom:12}}>{type} <span className="badge">{list.length}</span></h3>{list.map(t=><div key={t.id} className="admin-list-row"><div style={{flex:1}}><div style={{fontSize:13,fontWeight:600}}>{t.title}</div><div className="sub-text">+{t.reward}T · {t.timer}s</div></div><button className="danger-btn-sm" onClick={()=>del(type,t.id)}><I name="x" size={14}/></button></div>)}</div>)}
+  </div>;
+}
+
+function AdminUsers({users,setUsers,notify}){
+  const toggle=(id)=>{setUsers(u=>u.map(x=>x.id===id?{...x,status:x.status==="banned"?"active":"banned"}:x));notify("Updated");};
+  const editBal=(id,d)=>{setUsers(u=>u.map(x=>x.id===id?{...x,balance:Math.max(0,x.balance+d)}:x));notify("Balance updated");};
+  return <div className="admin-section"><h2 className="admin-title">Users</h2><div className="admin-card">{users.map(u=><div key={u.id} className="admin-user-row"><div className="ref-avatar" style={{fontSize:12}}>{u.name[0]}</div><div style={{flex:1}}><div style={{fontWeight:600,fontSize:13}}>{u.name}</div><div className="sub-text">{u.email}</div></div><div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap"}}><span className="reward-val">{u.balance}T</span><button className="sm-btn accent" onClick={()=>editBal(u.id,50)}>+50</button><button className="sm-btn danger" onClick={()=>editBal(u.id,-50)}>-50</button><button className={`sm-btn ${u.status==="banned"?"accent":"danger"}`} onClick={()=>toggle(u.id)}>{u.status==="banned"?"Unban":"Ban"}</button></div></div>)}</div></div>;
+}
+
+function AdminWithdrawals({withdrawals,setWithdrawals,notify}){
+  const update=(id,s)=>{setWithdrawals(w=>w.map(x=>x.id===id?{...x,status:s}:x));notify(`Withdrawal ${s}`);};
+  const sc={pending:"#f59e0b",approved:"#00d4aa",rejected:"#ef4444"};
+  return <div className="admin-section"><h2 className="admin-title">Withdrawals</h2><div className="admin-card">{withdrawals.map(w=><div key={w.id} className="admin-list-row" style={{alignItems:"flex-start"}}><div style={{flex:1}}><div style={{fontWeight:600,fontSize:13}}>{w.user}</div><div className="sub-text">{w.method} · {w.account}</div><div style={{marginTop:4,display:"flex",gap:8,alignItems:"center"}}><span className="reward-val">{w.amount}T</span><span className="status-badge" style={{background:sc[w.status]+"22",color:sc[w.status]}}>{w.status}</span></div></div>{w.status==="pending"&&<div style={{display:"flex",gap:8}}><button className="sm-btn accent" onClick={()=>update(w.id,"approved")}>Approve</button><button className="sm-btn danger" onClick={()=>update(w.id,"rejected")}>Reject</button></div>}</div>)}</div></div>;
+}
+
+function AdminCampaigns({campaigns,setCampaigns,notify}){
+  const update=(id,s)=>{setCampaigns(c=>c.map(x=>x.id===id?{...x,status:s}:x));notify(`Campaign ${s}`);};
+  const sc={active:"#00d4aa",pending:"#f59e0b",completed:"#6366f1",rejected:"#ef4444"};
+  return <div className="admin-section"><h2 className="admin-title">Campaigns</h2><div className="admin-card">{campaigns.map(c=><div key={c.id} className="admin-list-row" style={{alignItems:"flex-start"}}><div style={{flex:1}}><div style={{display:"flex",gap:8,alignItems:"center",marginBottom:4}}><span style={{fontWeight:600,fontSize:13}}>{c.title}</span><span className="status-badge" style={{background:sc[c.status]+"22",color:sc[c.status]}}>{c.status}</span></div><div className="sub-text">{c.user} · {c.type} · ${c.budget} budget</div><div className="progress-bar" style={{marginTop:8}}><div className="progress-fill" style={{width:`${(c.completed/c.target)*100}%`}}/></div><div className="sub-text">{c.completed}/{c.target}</div></div>{c.status==="pending"&&<div style={{display:"flex",gap:8}}><button className="sm-btn accent" onClick={()=>update(c.id,"active")}>Approve</button><button className="sm-btn danger" onClick={()=>update(c.id,"rejected")}>Reject</button></div>}</div>)}</div></div>;
+}
+
+function AuthScreen({onLogin}){
+  const[mode,setMode]=useState("login");
+  const[form,setForm]=useState({name:"",email:"",password:"",ref:""});
+  const[err,setErr]=useState("");
+  const submit=()=>{
+    if(!form.email||!form.password){setErr("Fill all fields");return;}
+    if(form.email==="admin@tcoin.app"&&form.password==="admin123"){onLogin({role:"admin"});return;}
+    onLogin({role:"user",name:form.name||"Demo User",email:form.email,balance:500,ref_code:"TCOIN"+Math.floor(10000+Math.random()*90000),total_earned:500,today_earned:50});
+  };
+  return <div className="auth-screen"><div className="auth-bg"/>
+    <div className="auth-card">
+      <div className="auth-logo"><div className="auth-logo-icon">T</div><span>TCOIN</span></div>
+      <p className="auth-tagline">Earn crypto doing simple tasks</p>
+      <div className="auth-tabs"><button className={mode==="login"?"active":""} onClick={()=>setMode("login")}>Login</button><button className={mode==="register"?"active":""} onClick={()=>setMode("register")}>Register</button></div>
+      {mode==="register"&&<div className="form-group"><input className="input" placeholder="Full Name" value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/></div>}
+      <div className="form-group"><input className="input" type="email" placeholder="Email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})}/></div>
+      <div className="form-group"><input className="input" type="password" placeholder="Password" value={form.password} onChange={e=>setForm({...form,password:e.target.value})}/></div>
+      {mode==="register"&&<div className="form-group"><input className="input" placeholder="Referral code (optional)" value={form.ref} onChange={e=>setForm({...form,ref:e.target.value})}/></div>}
+      {err&&<p className="auth-err">{err}</p>}
+      <button className="primary-btn" onClick={submit}>{mode==="login"?"Sign In →":"Create Account →"}</button>
+      <div className="auth-hint"><I name="admin" size={13}/> Admin: admin@tcoin.app / admin123</div>
+    </div>
+  </div>;
+}
+
+function App(){
+  const[session,setSession]=useState(null);
+  const setUser=(updater)=>setSession(s=>({...s,...(typeof updater==="function"?updater(s):updater)}));
+  if(!session)return <AuthScreen onLogin={setSession}/>;
+  if(session.role==="admin")return <AdminPanel onLogout={()=>setSession(null)}/>;
+  return <UserPanel user={session} onLogout={()=>setSession(null)} setUser={setUser}/>;
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
